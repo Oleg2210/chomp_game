@@ -1,43 +1,45 @@
 #!/usr/bin/python3
 import os
+import re
 
 
 class Chomp:
 
-    def __init__(self, row, column):
-        self.row = row
-        self.column = column
-        self.cookie_field = ['0' for i in range(0, row*column)]
+    def __init__(self, row_number, column_number):
+        self.row_number = row_number
+        self.column_number = column_number
+        self.cookie_field = ['0' for i in range(0, row_number*column_number)]
         self.cookie_field[0] = 'X'
         self._whose_turn = '1'
 
     def run(self):
         loose_state = None
         while loose_state is None:
-            loose_state = self._check_loose()
             self._take_move()
             self._whose_turn = '2' if (self._whose_turn == '1') else '1'
+            loose_state = self._check_loose()
+
+    @classmethod
+    def get_size_numbers(cls):
+        row_number = int(cls.get_input("Please input a number of rows(min=2, max=9):", "^[2-9]$"))
+        column_number = int(cls.get_input("Please input a number of columns(min=2, max=9):", "^[2-9]$"))
+        return row_number, column_number
 
     @staticmethod
-    def input_number(output_string, min_value):
+    def get_input(output_string, string_format, clear=True):
         while True:
-            os.system("clear")
+            if clear:
+                os.system("clear")
             print(output_string)
-            try:
-                chop_number = int(input())
-                if chop_number >= min_value:
-                    return chop_number
-            except Exception:
-                continue
-
-    def _take_move(self):
-        print(f"Turn of the {self._whose_turn} player. Please choose your cookie(Input format is \"row/column\"):")
+            inp_string = input()
+            if re.match(string_format, inp_string):
+                return inp_string
 
     def draw_field(self):
         index = 1
         for cookie in self.cookie_field:
             print(f"{cookie}  ", end='')
-            if not(index % self.row):
+            if not(index % self.column_number):
                 print("\n")
             index += 1
 
@@ -46,14 +48,35 @@ class Chomp:
             return self._whose_turn
         return None
 
+    def _take_move(self):
+        while True:
+            os.system("clear")
+            self.draw_field()
+            cookie_number = self._get_cookie_number()
+            self._eat_cookies(cookie_number)
 
-def chomp_run():
-    rows_number = Chomp.input_number(output_string="Please input a number of rows:", min_value=2)
-    column_number = Chomp.input_number(output_string="Please input a number of columns:", min_value=2)
-    chomp = Chomp(rows_number, column_number)
-    chomp.draw_field()
+    def _get_cookie_number(self):
+        output_string = f"Turn of the {self._whose_turn} player. " \
+                        f"Please choose your cookie(Input format is \"row/column\"):"
+        row, column = self.get_input(output_string, "^[1-9]/[1-9]$", False).split('/')
+        return ((int(row)-1) * self.column_number) + int(column)
+
+    def _eat_cookies(self, cookie_number):
+        if self.cookie_field[cookie_number - 1] == '0':
+            column = cookie_number % self.column_number
+            self.cookie_field[cookie_number - 1] == self._whose_turn
+
+            while cookie_number < (self.column_number * self.row_number):
+                if self.cookie_field[cookie_number] == '0':
+                    if (cookie_number % self.column_number) >= column:
+                        self.cookie_field[cookie_number] = self._whose_turn
+                cookie_number += 1
+        else:
+            return False
 
 
 if __name__ == "__main__":
-    chomp_run()
+    row_number, column_number = Chomp.get_size_numbers()
+    chomp = Chomp(row_number, column_number)
+    chomp.run()
 
