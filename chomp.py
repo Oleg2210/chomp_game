@@ -59,20 +59,25 @@ class Chomp:
         output_string = f"Turn of the {self._whose_turn} player. " \
                         f"Please choose your cookie(Input format is \"row/column\"):"
         row, column = self.get_input(output_string, "^[1-9]/[1-9]$", False).split('/')
-        return ((int(row)-1) * self.column_number) + int(column)
+        return ((int(row) - 1) * self.column_number) + int(column) - 1
 
     def _eat_cookies(self, cookie_number):
-        if self.cookie_field[cookie_number - 1] == '0':
-            column = cookie_number % self.column_number
-            self.cookie_field[cookie_number - 1] == self._whose_turn
+        if self.cookie_field[cookie_number] == '0':
+            cookie_column = self._get_cookies_column(cookie_number)
 
-            while cookie_number < (self.column_number * self.row_number):
+            while cookie_number < (self.row_number * self.column_number):
                 if self.cookie_field[cookie_number] == '0':
-                    if (cookie_number % self.column_number) >= column:
+                    current_column = self._get_cookies_column(cookie_number)
+                    if current_column >= cookie_column:
                         self.cookie_field[cookie_number] = self._whose_turn
                 cookie_number += 1
+            return True
         else:
             return False
+
+    def _get_cookies_column(self, cookie_number):
+        cookie_column = (cookie_number + 1) % self.column_number
+        return cookie_column if cookie_column else self.column_number
 
 
 if __name__ == "__main__":
