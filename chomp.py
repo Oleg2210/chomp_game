@@ -18,6 +18,8 @@ class Chomp:
             self._take_move()
             self._whose_turn = '2' if (self._whose_turn == '1') else '1'
             loose_state = self._check_loose()
+        os.system("clear")
+        print(f"{loose_state} player has loosed")
 
     @classmethod
     def get_size_numbers(cls):
@@ -44,7 +46,7 @@ class Chomp:
             index += 1
 
     def _check_loose(self):
-        if (self.cookie_field[1] != '0') and (self.cookie_field[self.row] != '0'):
+        if (self.cookie_field[1] != '0') and (self.cookie_field[self.row_number] != '0'):
             return self._whose_turn
         return None
 
@@ -53,7 +55,8 @@ class Chomp:
             os.system("clear")
             self.draw_field()
             cookie_number = self._get_cookie_number()
-            self._eat_cookies(cookie_number)
+            if self._eat_cookies(cookie_number):
+                return
 
     def _get_cookie_number(self):
         output_string = f"Turn of the {self._whose_turn} player. " \
