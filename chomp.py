@@ -84,7 +84,12 @@ class Chomp:
 
 
 if __name__ == "__main__":
-    row_number, column_number = Chomp.get_size_numbers()
-    chomp = Chomp(row_number, column_number)
-    chomp.run()
+    while True:
+        row_number, column_number = Chomp.get_size_numbers()
+        chomp = Chomp(row_number, column_number)
+        chomp.run()
+
+        again = Chomp.get_input("Do you want to play again?(y/n)", "^[yn]$", False)
+        if again == 'n':
+            break
 
