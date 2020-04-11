@@ -4,12 +4,11 @@ import re
 
 
 class Chomp:
-
     def __init__(self, row_number, column_number):
         self.row_number = row_number
         self.column_number = column_number
-        self.cookie_field = ['0' for i in range(0, row_number*column_number)]
-        self.cookie_field[0] = 'X'
+        self._cookie_field = ['0' for i in range(0, row_number*column_number)]
+        self._cookie_field[0] = 'X'
         self._whose_turn = '1'
 
     def run(self):
@@ -37,23 +36,23 @@ class Chomp:
             if re.match(string_format, inp_string):
                 return inp_string
 
-    def draw_field(self):
+    def _draw_field(self):
         index = 1
-        for cookie in self.cookie_field:
+        for cookie in self._cookie_field:
             print(f"{cookie}  ", end='')
             if not(index % self.column_number):
                 print("\n")
             index += 1
 
     def _check_loose(self):
-        if (self.cookie_field[1] != '0') and (self.cookie_field[self.row_number] != '0'):
+        if (self._cookie_field[1] != '0') and (self._cookie_field[self.row_number] != '0'):
             return self._whose_turn
         return None
 
     def _take_move(self):
         while True:
             os.system("clear")
-            self.draw_field()
+            self._draw_field()
             cookie_number = self._get_cookie_number()
             if self._eat_cookies(cookie_number):
                 return
@@ -65,14 +64,14 @@ class Chomp:
         return ((int(row) - 1) * self.column_number) + int(column) - 1
 
     def _eat_cookies(self, cookie_number):
-        if self.cookie_field[cookie_number] == '0':
+        if self._cookie_field[cookie_number] == '0':
             cookie_column = self._get_cookies_column(cookie_number)
 
             while cookie_number < (self.row_number * self.column_number):
-                if self.cookie_field[cookie_number] == '0':
+                if self._cookie_field[cookie_number] == '0':
                     current_column = self._get_cookies_column(cookie_number)
                     if current_column >= cookie_column:
-                        self.cookie_field[cookie_number] = self._whose_turn
+                        self._cookie_field[cookie_number] = self._whose_turn
                 cookie_number += 1
             return True
         else:
