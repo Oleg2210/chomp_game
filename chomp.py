@@ -58,10 +58,13 @@ class Chomp:
                 return
 
     def _get_cookie_number(self):
-        output_string = f"Turn of the {self._whose_turn} player. " \
-                        f"Please choose your cookie(Input format is \"row/column\"):"
-        row, column = self.get_input(output_string, "^[1-9]/[1-9]$", False).split('/')
-        return ((int(row) - 1) * self.column_number) + int(column) - 1
+        while True:
+            output_string = f"Turn of the {self._whose_turn} player. " \
+                            f"Please choose your cookie(Input format is \"row/column\"):"
+            row, column = self.get_input(output_string, "^[1-9]/[1-9]$", False).split('/')
+            cookie_number = ((int(row) - 1) * self.column_number) + int(column) - 1
+            if cookie_number < len(self._cookie_field):
+                return cookie_number
 
     def _eat_cookies(self, cookie_number):
         if self._cookie_field[cookie_number] == '0':
