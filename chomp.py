@@ -3,7 +3,7 @@ import os
 import re
 
 
-class Chomp:
+class Chomp:#dawd
     def __init__(self, row_number, column_number):
         self.row_number = row_number
         self.column_number = column_number
